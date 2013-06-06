@@ -1,5 +1,6 @@
 /*
  * Recommends authors etc using Wikipedias influenced by information
+ * Contains new method which outputs names given an input of names 
  */
 package deadrecommender;
 
@@ -41,23 +42,22 @@ public class DeadRecommender implements Recommender {
     
     //Constructors
     
-  public DeadRecommender() throws TasteException, IOException {
-    this(new FileDataModel(readResourceToTempFile("ratings.dat")));
-  }
+    public DeadRecommender() throws TasteException, IOException {
+      this(new FileDataModel(readResourceToTempFile("/home/ubuntu/datasets/RECOMMENDER_SET_NUM.csv")));
+    }
 
   
     public DeadRecommender(DataModel model)
       throws TasteException, IOException {
     
- UserSimilarity similarity = new LogLikelihoodSimilarity(model);
-    UserNeighborhood neighborhood =
-      new NearestNUserNeighborhood(200, similarity, model);
+      UserSimilarity similarity = new LogLikelihoodSimilarity(model);
+      UserNeighborhood neighborhood =
+        new NearestNUserNeighborhood(200, similarity, model);
 
-     recInfluences = new GenericBooleanPrefUserBasedRecommender(
+      recInfluences = new GenericBooleanPrefUserBasedRecommender(
         model, neighborhood, similarity);
-     this.model=model;
+      this.model=model;
   }
-  
   
   
     static File readResourceToTempFile(String resourceName) throws IOException {
@@ -77,11 +77,11 @@ public class DeadRecommender implements Recommender {
   }
 
     public List<RecommendedItem> recommend(long l, int i) throws TasteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return recInfluences.recommend(l, i);
     }
 
     public List<RecommendedItem> recommend(long l, int i, IDRescorer idr) throws TasteException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return recInfluences.recommend(l, i);
     }
 
     public float estimatePreference(long l, long l1) throws TasteException {
