@@ -1,7 +1,7 @@
-package dead.recommender;
+package deadrecommender;
 
 
-
+// import packages 
 
 import org.apache.mahout.cf.taste.impl.model.file.*;
 import org.apache.mahout.cf.taste.impl.neighborhood.*;
@@ -16,24 +16,19 @@ import org.apache.mahout.cf.taste.similarity.*;
 import java.io.*;
 import java.util.*;
 
+//The Boolean recommender that will be used to recommend influences
+
 class BooleanRecommender {
 
   private BooleanRecommender() {
   }
 
   public static void main(String[] args) throws Exception {
-
-    int ni;
-      
-    /*DataModel model = new FileDataModel(new File("/home/ubuntu/repositories/MiA/src/main/java/mia/recommender/ch02/intro.csv"));*/
+  
+    DataModel model = new GenericBooleanPrefDataModel(
+    GenericBooleanPrefDataModel.toDataMap(
+       new FileDataModel(new File("/home/ubuntu/datasets/RECOMMENDER_SET_NUM.csv"))));
     
-        DataModel model = new GenericBooleanPrefDataModel(
-        GenericBooleanPrefDataModel.toDataMap(
-          new FileDataModel(new File("/home/ubuntu/datasets/RECOMMENDER_SET_NUM.csv"))));
-    
-    /*DataModel model = new FileDataModel(new File("/home/ubuntu/datasets/RECOMMENDER_SET_NUM.csv"));*/
-    ni=model.getNumItems();
-    System.out.println(ni);
     UserSimilarity similarity = new LogLikelihoodSimilarity(model);
     UserNeighborhood neighborhood =
       new NearestNUserNeighborhood(200, similarity, model);
@@ -43,9 +38,6 @@ class BooleanRecommender {
 
     List<RecommendedItem> recommendations =
         recommender.recommend(2561, 10);
-    
-    
-    System.out.println(recommendations.size());
 
     for (RecommendedItem recommendation : recommendations) {
       System.out.println(recommendation);
