@@ -20,6 +20,9 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 
 public class DeadRecommenderIO {
     
+    private final String[] recNames;
+    private final int userID;
+    
     /* To do
      * turn main into a method to which you can submit a list of names
      * When you submit the names it strips out the no alpha numeric characters and looks up their item ID
@@ -31,10 +34,11 @@ public class DeadRecommenderIO {
      * Create another method for dinner party recommendtations
      */
     
-    public static void main( String[] args ) throws FileNotFoundException, IOException, TasteException // Need to turn this into an object where the constructor sets up the array
-
+    public DeadRecommenderIO (int userID) throws FileNotFoundException, IOException, TasteException // Need to turn this into an object where the constructor sets up the array     
     {
-       
+        
+    this.userID=userID;    
+        
     DeadRecommender deadRec=  new DeadRecommender();
         
     CSVReader reader = new CSVReader(new FileReader("/home/ubuntu/datasets/PERSON_IDS.csv"));
@@ -42,8 +46,10 @@ public class DeadRecommenderIO {
     String [] nextLine;
 
     String[] influencers;
-
+  
     influencers = new String[14000];
+    
+    recNames = new String[4];
 
     int i=0;
 
@@ -59,14 +65,23 @@ public class DeadRecommenderIO {
 
     }
     
-    List<RecommendedItem> recommendations = deadRec.recommend(1116, 4);
+    List<RecommendedItem> recommendations = deadRec.recommend(userID, 4);
     
-    for (RecommendedItem recommendation : recommendations) {
-      System.out.println(influencers[(int) recommendation.getItemID()]);
+    int j=0;
+    
+    for (RecommendedItem recommendation : recommendations) 
+    {      
+        recNames[j]=influencers[(int) recommendation.getItemID()];
+        j=j+1;
     }
 
-   
+    //return(recNames);
 
+    }
+    
+    public String[] getNames() {
+        
+        return(recNames);
     }
     
 }
