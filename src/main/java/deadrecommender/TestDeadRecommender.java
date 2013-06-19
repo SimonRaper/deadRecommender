@@ -29,9 +29,9 @@ public class TestDeadRecommender {
         
         //System.out.println(dio.getUserID("Aristotle"));
         
-        dio.submitID(dio.getUserID("Bob Dylan"));
+        dio.submitID(dio.getUserID("Jim Bob"));
         
-        neigh=dio.getNeighbours(dio.getUserID("Bob Dylan"));
+        neigh=dio.getNeighbours(dio.getUserID("Jim Bob"));
         
         names = dio.getNames();
         

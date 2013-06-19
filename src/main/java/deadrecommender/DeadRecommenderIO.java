@@ -21,7 +21,8 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 public class DeadRecommenderIO {
     
     private final String[] recNames;;
-    private final String [] influencers;   
+    private final String[] influencers;  
+    private final String[] nameCodes;
     private final DeadRecommender deadRec;
     
     /* To do
@@ -46,6 +47,7 @@ public class DeadRecommenderIO {
     //Initialise variables 
     
     influencers = new String[14000];
+    nameCodes = new String[14000];
     recNames = new String[4];
     int i=0;
     
@@ -67,9 +69,8 @@ public class DeadRecommenderIO {
     while ((nextLine = reader.readNext()) != null) {
 
         //System.out.println(nextLine[0] + ", " + nextLine[1]);
-
+        nameCodes[i]=nextLine[1];
         influencers[i]=nextLine[2];
-
         i=i+1;
 
     }
@@ -87,22 +88,34 @@ public class DeadRecommenderIO {
     
     
     public int getUserID(String userName) {
-        int c=1;
-        // Replace with a while loop
-        for (String s : influencers)
-        {
-            if (s.equals(userName)==true) {
-                //System.out.println(s);
-                //System.out.println(c);
-                break;
+        int c = 1;
+
+        for (String s : nameCodes) {
+
+            if (s != null) {
+
+                if (s.equals(userName.replaceAll("[^a-zA-Z0-9]", "").toUpperCase()) == true) {
+                    //System.out.println(s);
+                    //System.out.println(c);
+                    return (c);
+                }
             }
-            c=c+1;
+            c = c + 1;
         }
-        return(c);
+        return (0);
     }
     
     
     public void submitNames(String[] subNames) {
+        
+        int n=subNames.length;
+        int [] userIDArray= new int [n];
+        int i=1;
+        
+        for (String s : subNames){
+            userIDArray[i]=getUserID(s);
+            i=i+1;
+        }
         
         
     }
