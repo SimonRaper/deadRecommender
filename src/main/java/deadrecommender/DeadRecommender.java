@@ -39,6 +39,7 @@ public class DeadRecommender implements Recommender {
    
     private final DataModel model;
     private final GenericBooleanPrefUserBasedRecommender recInfluences;
+    private final UserNeighborhood neighborhood;
     
     //Constructors
     
@@ -51,7 +52,7 @@ public class DeadRecommender implements Recommender {
       throws TasteException, IOException {
     
       UserSimilarity similarity = new LogLikelihoodSimilarity(model);
-      UserNeighborhood neighborhood =
+      neighborhood =
         new NearestNUserNeighborhood(200, similarity, model);
 
       recInfluences = new GenericBooleanPrefUserBasedRecommender(
@@ -84,6 +85,10 @@ public class DeadRecommender implements Recommender {
         return recInfluences.recommend(l, i);
     }
 
+    public long[] getNeighbourIDs(long l) throws TasteException {
+        return(neighborhood.getUserNeighborhood(l));
+    }
+    
     public float estimatePreference(long l, long l1) throws TasteException {
         throw new UnsupportedOperationException("Not supported yet.");
     }

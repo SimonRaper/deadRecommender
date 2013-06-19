@@ -22,14 +22,29 @@ public class TestDeadRecommender {
 
     {
      
-        DeadRecommenderIO dio= new DeadRecommenderIO(1037);
+        DeadRecommenderIO dio= new DeadRecommenderIO();
         
         String[] names= new String[4];
+        String[] neigh= new String[200];
+        
+        //System.out.println(dio.getUserID("Aristotle"));
+        
+        dio.submitID(dio.getUserID("Bob Dylan"));
+        
+        neigh=dio.getNeighbours(dio.getUserID("Bob Dylan"));
+        
         names = dio.getNames();
         
-        
-      System.out.println(names[0]);
-        
+      for (String s : names)  {
+      System.out.println(s);
+      }
+      
+      
+      System.out.println("The neighbours: ");
+      
+      for (String s : neigh){
+      System.out.println(s);
+      }
 
     }
     
