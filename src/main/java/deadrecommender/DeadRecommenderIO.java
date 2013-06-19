@@ -28,7 +28,7 @@ public class DeadRecommenderIO {
      * When you submit the names it strips out the no alpha numeric characters and looks up their item ID
      * Use the update feature of the recommender to allow us to write in the new entries
      * Produce a recommendation for the user
-     * Add the full names to person_IDs look up file
+     * Add the full names to person_IDs look up file DONE
      * Output the recommendations
      * Also show your neighborhood
      * Create another method for dinner party recommendtations
@@ -41,7 +41,7 @@ public class DeadRecommenderIO {
         
     DeadRecommender deadRec=  new DeadRecommender();
         
-    CSVReader reader = new CSVReader(new FileReader("/home/ubuntu/datasets/PERSON_IDS.csv"));
+    CSVReader reader = new CSVReader(new FileReader("/home/ubuntu/datasets/PERSON_IDS_FULL_NAME.csv"));
 
     String [] nextLine;
 
@@ -59,7 +59,7 @@ public class DeadRecommenderIO {
 
         //System.out.println(nextLine[0] + ", " + nextLine[1]);
 
-        influencers[i]=nextLine[0];
+        influencers[i]=nextLine[2];
 
         i=i+1;
 
