@@ -2,6 +2,7 @@ package deadrecommender;
 
 /*
  *Handles input and output to the recommender
+ *When copying to the servlet re-enable the avax.servlet.ServletContext package.
  */
 
 /**
@@ -10,13 +11,25 @@ package deadrecommender;
  */
 
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
+
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+//import javax.servlet.ServletContext;
+
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
+
 
 public class DeadRecommenderIO {
     
@@ -24,6 +37,7 @@ public class DeadRecommenderIO {
     private final String[] influencers;  
     private final String[] nameCodes;
     private final DeadRecommender deadRec;
+    private final String path;
     
     /* To do
      * turn main into a method to which you can submit a list of names
@@ -37,7 +51,7 @@ public class DeadRecommenderIO {
      * Create another method for dinner party recommendtations
      */
     
-    public DeadRecommenderIO () throws FileNotFoundException, IOException, TasteException // Need to turn this into an object where the constructor sets up the array     
+    public DeadRecommenderIO (String path) throws FileNotFoundException, IOException, TasteException // Need to turn this into an object where the constructor sets up the array     
     {
     
     //Declare variables    
@@ -48,20 +62,22 @@ public class DeadRecommenderIO {
     
     influencers = new String[14000];
     nameCodes = new String[14000];
-    recNames = new String[4];
+    recNames = new String[6];
     int i=0;
+    this.path=path;
     
     //this.userID=userID;  
         
     
     //Create a new DeadRecommender object
         
-    deadRec=  new DeadRecommender();
+    deadRec=  new DeadRecommender(path);
     
     
     //Load the csv look up file
+    
         
-    CSVReader reader = new CSVReader(new FileReader("/home/ubuntu/datasets/PERSON_IDS_FULL_NAME.csv"));
+    CSVReader reader = new CSVReader(new FileReader(path + "WEB-INF/classes/PERSON_IDS_FULL_NAME.csv"));
 
     
     //Load in list of influencer names
@@ -106,16 +122,25 @@ public class DeadRecommenderIO {
     }
     
     
-    public void submitNames(String[] subNames) {
+    public void submitNames(String[] subNames) throws IOException, FileNotFoundException {
         
         int n=subNames.length;
         int [] userIDArray= new int [n];
-        int i=1;
+        int i=0;
         
         for (String s : subNames){
             userIDArray[i]=getUserID(s);
             i=i+1;
         }
+        
+        CSVWriter writer = new CSVWriter(new OutputStreamWriter(
+                new FileOutputStream(path + "WEB-INF/classes/RECOMMENDER_SET_NUM.Add.csv"), "UTF-8"),
+                ',', CSVWriter.NO_QUOTE_CHARACTER);
+        for (int j : userIDArray){
+        writer.writeNext(new String[] {"1", String.valueOf(j)});
+        }
+        writer.close();
+        deadRec.refresh(null);
         
         
     }
@@ -123,7 +148,7 @@ public class DeadRecommenderIO {
     public void submitID(int userID) throws TasteException {
         
         
-    List<RecommendedItem> recommendations = deadRec.recommend(userID, 4);
+    List<RecommendedItem> recommendations = deadRec.recommend(userID, 6);
     
     System.out.println(userID);
     
@@ -140,7 +165,7 @@ public class DeadRecommenderIO {
     public String[] getNeighbours(int userID) throws TasteException {
         
         String[] listedNeighbours;
-        listedNeighbours = new String[200];
+        listedNeighbours = new String[80];
         int j=0;
         
         for (long s : deadRec.getNeighbourIDs(userID)) 

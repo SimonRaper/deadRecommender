@@ -25,6 +25,7 @@ import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
 import org.apache.mahout.cf.taste.impl.recommender.GenericBooleanPrefUserBasedRecommender;
 import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
+import org.apache.mahout.cf.taste.impl.similarity.TanimotoCoefficientSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.IDRescorer;
@@ -43,17 +44,18 @@ public class DeadRecommender implements Recommender {
     
     //Constructors
     
-    public DeadRecommender() throws TasteException, IOException {
-      this(new FileDataModel(readResourceToTempFile("/home/ubuntu/datasets/RECOMMENDER_SET_NUM.csv")));
+    public DeadRecommender(String path) throws TasteException, IOException {
+      //this(new FileDataModel(readResourceToTempFile("/WEB-INF/classes/RECOMMENDER_SET_NUM.csv")));
+    	this(new FileDataModel(new File(path + "WEB-INF/classes/RECOMMENDER_SET_NUM.csv")));
     }
 
   
     public DeadRecommender(DataModel model)
       throws TasteException, IOException {
     
-      UserSimilarity similarity = new LogLikelihoodSimilarity(model);
+      UserSimilarity similarity = new TanimotoCoefficientSimilarity(model); //IR Stats showed Tanimoto superior
       neighborhood =
-        new NearestNUserNeighborhood(200, similarity, model);
+        new NearestNUserNeighborhood(80, similarity, model); // Based on IR Stats
 
       recInfluences = new GenericBooleanPrefUserBasedRecommender(
         model, neighborhood, similarity);
@@ -106,7 +108,7 @@ public class DeadRecommender implements Recommender {
     }
 
     public void refresh(Collection<Refreshable> clctn) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    	recInfluences.refresh(null);
     }
 
 }
