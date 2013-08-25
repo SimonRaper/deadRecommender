@@ -122,14 +122,18 @@ public class DeadRecommenderIO {
     }
     
     
-    public void submitNames(String[] subNames) throws IOException, FileNotFoundException {
+    public String submitNames(String[] subNames) throws IOException, FileNotFoundException {
         
         int n=subNames.length;
         int [] userIDArray= new int [n];
         int i=0;
+        String notMatched = ""; 
         
         for (String s : subNames){
             userIDArray[i]=getUserID(s);
+            if (getUserID(s)==0) {
+            	notMatched = notMatched + s;
+            }
             i=i+1;
         }
         
@@ -142,7 +146,7 @@ public class DeadRecommenderIO {
         writer.close();
         deadRec.refresh(null);
         
-        
+        return(notMatched);
     }
     
     public void submitID(int userID) throws TasteException {
